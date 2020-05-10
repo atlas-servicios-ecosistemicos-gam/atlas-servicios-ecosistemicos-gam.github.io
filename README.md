@@ -4,7 +4,7 @@ Este sitio está siendo construído con los siguientes paquetes del lenguaje de 
 
 * [ggplot2](https://ggplot2.tidyverse.org/)
 * [sf](https://cran.r-project.org/web/packages/sf/)
-* [raster]()
+* [raster](https://cran.r-project.org/web/packages/raster/)
 * [tmap](https://cran.r-project.org/web/packages/tmap/)
-* [leaflet]()
-* [shiny]()
+* [leaflet](https://cran.r-project.org/web/packages/leaflet/)
+* [shiny](https://cran.r-project.org/web/packages/shiny/)
