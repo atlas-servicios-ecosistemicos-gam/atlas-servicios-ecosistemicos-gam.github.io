@@ -1,7 +1,8 @@
 # Atlas temático de los servicios ecosistémicos de los espacios verdes en la GAM
 
 ## Contenidos
-[Tablero de control](https://atlas-servicios-ecosistemicos-gam.github.io/tablero-control/)
+### Tableros de control
+[Mamíferos](https://atlas-servicios-ecosistemicos-gam.github.io/tablero-control/mammalia.html)
 
 ## Herramientas
 Este sitio está siendo construído con los siguientes paquetes del lenguaje de programación [R](https://www.r-project.org/):
