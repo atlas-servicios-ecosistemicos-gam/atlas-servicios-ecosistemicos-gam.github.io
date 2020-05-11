@@ -1,7 +1,6 @@
 # Atlas temático de los servicios ecosistémicos de los espacios verdes en la GAM
 
 ## Contenidos
-### Tablero de control
 [Tablero de control](https://atlas-servicios-ecosistemicos-gam.github.io/tablero-control/)
 
 ## Herramientas
