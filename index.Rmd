@@ -17,10 +17,6 @@ library(raster)
 library(rgdal)
 
 # Límite de la GAM
-#gam_limite <-
-#  st_read(
-#    "https://raw.githubusercontent.com/atlas-servicios-ecosistemicos-gam/datos/master/limite/gam_limite.geojson"
-#  )
 gam_limite <-
   st_read(
     "C:/users/mfvargas/gam/datos/limite/limite_gam_cr05.shp"
@@ -34,6 +30,19 @@ uso_suelo <-
   projectRaster(crs="+proj=longlat +datum=WGS84") %>%
   crop(gam_limite) %>%
   mask(gam_limite)
+
+
+# Cálculos
+# --------
+
+# Cantidad total de celdas
+ncell = ncell(uso_suelo)
+
+mat = as.matrix(uso_suelo)
+vec = as.vector(mat)
+
+# Se excluyen los valores nulos
+ncell = sum(is.na(vec))
 ```
 
 Column {data-width=500}
@@ -54,7 +63,7 @@ colores <- c(rgb(60,170,0,maxColorValue=255), rgb(211,255,190,maxColorValue=255)
              rgb(255,255,166,maxColorValue=255), rgb(155,38,0,maxColorValue=255), rgb(211,23,255,maxColorValue=255), rgb(180,230,250,maxColorValue=255))
 at <- c(1, 2, 3, 4, 
         5, 6, 7, 8)
-lb <- c("Bosque secundario medio y tardío", "Bosque secundario temprano", "Zona urbana contínua y discontínua", "Hortalizas, raíces y tubérculos",
+lb <- c("Bosque secundario medio y tardío", "Bosque secundario temprano", "Zona urbana continua y discontinua", "Hortalizas, raíces y tubérculos",
         "Pasto con árboles y limpio", "Café", "Fresas, flores y orngamentales", "Aguas continentales")
 cb <- colorBin(palette = colores, bins = at, domain = at, na.color = "transparent")
 
@@ -92,12 +101,90 @@ m
 
 Column {data-width=500}
 -------------------------------------
-### Indicador 1
+### Bosque secundario medio y tardío
 ```{r}
+valueBox(
+  paste0(
+    toString(trunc((length(which(vec == 1))/ncell)*100)),
+    "%"
+  ), 
+  icon = "fa-pencil"
+)
 ```
 
-### Indicador 2
+### Bosque secundario temprano
 ```{r}
+valueBox(
+  paste0(
+    toString(trunc((length(which(vec == 2))/ncell)*100)),
+    "%"
+  ), 
+  icon = "fa-pencil"
+)
 ```
 
+### Zonas urbanas continuas y discontinuas
+```{r}
+valueBox(
+  paste0(
+    toString(trunc((length(which(vec == 3))/ncell)*100)),
+    "%"
+  ), 
+  icon = "fa-pencil"
+)
+```
 
+### Hortalizas, raíces y tubérculos
+```{r}
+valueBox(
+  paste0(
+    toString(trunc((length(which(vec == 4))/ncell)*100)),
+    "%"
+  ), 
+  icon = "fa-pencil"
+)
+```
+
+### Pastos con árboles y limpios
+```{r}
+valueBox(
+  paste0(
+    toString(trunc((length(which(vec == 5))/ncell)*100)),
+    "%"
+  ), 
+  icon = "fa-pencil"
+)
+```
+
+### Café
+```{r}
+valueBox(
+  paste0(
+    toString(trunc((length(which(vec == 6))/ncell)*100)),
+    "%"
+  ), 
+  icon = "fa-pencil"
+)
+```
+
+### Fresas, flores y ornamentales
+```{r}
+valueBox(
+  paste0(
+    toString(trunc((length(which(vec == 7))/ncell)*100)),
+    "%"
+  ), 
+  icon = "fa-pencil"
+)
+```
+
+### Aguas continentales
+```{r}
+valueBox(
+  paste0(
+    toString(trunc((length(which(vec == 8))/ncell)*100)),
+    "%"
+  ), 
+  icon = "fa-pencil"
+)
+```
