@@ -1,0 +1,190 @@
+---
+title: "Uso del suelo"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(sf)
+library(leaflet)
+library(knitr)
+library(kableExtra)
+library(dplyr)
+library(raster)
+library(rgdal)
+
+# Límite de la GAM
+gam_limite <-
+  st_read(
+    "C:/users/mfvargas/gam/datos/limite/limite_gam_cr05.shp"
+  ) %>%
+  st_transform(4326)
+
+# Uso del suelo
+uso_suelo <- 
+  raster("c:/users/mfvargas/gam/datos/indicadores/gam/uso-suelo/USO_SUELO_GAM_01HA_WEB.IMG") %>%
+  aggregate(fact=4, fun=modal) %>%
+  projectRaster(crs="+proj=longlat +datum=WGS84") %>%
+  crop(gam_limite) %>%
+  mask(gam_limite)
+
+
+# Cálculos
+# --------
+
+# Cantidad total de celdas
+ncell = ncell(uso_suelo)
+
+mat = as.matrix(uso_suelo)
+vec = as.vector(mat)
+
+# Se excluyen los valores nulos
+ncell = sum(is.na(vec))
+```
+
+Column {data-width=500}
+-----------------------------------------------------------------------
+
+### Uso del suelo
+
+```{r}
+# Paleta de colores
+pal <- colorNumeric(
+  c("#FF0000", "#00FF00", "#0000FF"), 
+  values(uso_suelo), 
+  na.color = "transparent"
+)
+
+# Colores para categorias
+colores <- c(rgb(60,170,0,maxColorValue=255), rgb(211,255,190,maxColorValue=255), rgb(246,217,223,maxColorValue=255), rgb(190,190,0,maxColorValue=255), 
+             rgb(255,255,166,maxColorValue=255), rgb(155,38,0,maxColorValue=255), rgb(211,23,255,maxColorValue=255), rgb(180,230,250,maxColorValue=255))
+at <- c(1, 2, 3, 4, 
+        5, 6, 7, 8)
+lb <- c("Bosque secundario medio y tardío", "Bosque secundario temprano", "Zona urbana continua y discontinua", "Hortalizas, raíces y tubérculos",
+        "Pasto con árboles y limpio", "Café", "Fresas, flores y orngamentales", "Aguas continentales")
+cb <- colorBin(palette = colores, bins = at, domain = at, na.color = "transparent")
+
+
+# Mapa web
+m <- leaflet(gam_limite) %>% 
+  addProviderTiles(providers$Esri.WorldImagery, group = "Imágenes de ESRI") %>% 
+  addProviderTiles(providers$Stamen.TonerLite, group = "Stamen Toner Lite") %>%
+  addProviderTiles(providers$OpenStreetMap.Mapnik, group = "OpenStreetMap") %>%
+  addPolygons(group = "Límite de la GAM") %>%
+  addRasterImage(uso_suelo, 
+                 colors = cb, 
+                 group = "Uso del suelo"
+  ) %>%  
+  addLegend(
+    title = "Categoría de uso del suelo", 
+    position = "bottomright",
+    colors = colores, 
+    labels = lb
+  ) %>%  
+  addLayersControl(
+    baseGroups = c("OpenStreetMap", "Stamen Toner Lite", "Imágenes de ESRI"),
+    overlayGroups = c("Límite de la GAM", "Uso del suelo"),
+    options = layersControlOptions(collapsed = TRUE)    
+  ) %>%  
+  addMiniMap(
+    toggleDisplay = TRUE,
+    position = "bottomleft",
+    tiles = providers$Stamen.TonerLite
+  )
+
+# Despliegue del mapa
+m
+```
+
+Column {data-width=500}
+-------------------------------------
+### Bosque secundario medio y tardío
+```{r}
+valueBox(
+  paste0(
+    toString(trunc((length(which(vec == 1))/ncell)*100)),
+    "%"
+  ), 
+  icon = "fa-pencil"
+)
+```
+
+### Bosque secundario temprano
+```{r}
+valueBox(
+  paste0(
+    toString(trunc((length(which(vec == 2))/ncell)*100)),
+    "%"
+  ), 
+  icon = "fa-pencil"
+)
+```
+
+### Zonas urbanas continuas y discontinuas
+```{r}
+valueBox(
+  paste0(
+    toString(trunc((length(which(vec == 3))/ncell)*100)),
+    "%"
+  ), 
+  icon = "fa-pencil"
+)
+```
+
+### Hortalizas, raíces y tubérculos
+```{r}
+valueBox(
+  paste0(
+    toString(trunc((length(which(vec == 4))/ncell)*100)),
+    "%"
+  ), 
+  icon = "fa-pencil"
+)
+```
+
+### Pastos con árboles y limpios
+```{r}
+valueBox(
+  paste0(
+    toString(trunc((length(which(vec == 5))/ncell)*100)),
+    "%"
+  ), 
+  icon = "fa-pencil"
+)
+```
+
+### Café
+```{r}
+valueBox(
+  paste0(
+    toString(trunc((length(which(vec == 6))/ncell)*100)),
+    "%"
+  ), 
+  icon = "fa-pencil"
+)
+```
+
+### Fresas, flores y ornamentales
+```{r}
+valueBox(
+  paste0(
+    toString(trunc((length(which(vec == 7))/ncell)*100)),
+    "%"
+  ), 
+  icon = "fa-pencil"
+)
+```
+
+### Aguas continentales
+```{r}
+valueBox(
+  paste0(
+    toString(trunc((length(which(vec == 8))/ncell)*100)),
+    "%"
+  ), 
+  icon = "fa-pencil"
+)
+```
